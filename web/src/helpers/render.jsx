@@ -79,6 +79,7 @@ import {
 import {
   SiAtlassian,
   SiAuth0,
+  SiAuthentik,
   SiBitbucket,
   SiDiscord,
   SiDropbox,
@@ -87,6 +88,7 @@ import {
   SiGithub,
   SiGitlab,
   SiGoogle,
+  SiKeycloak,
   SiLinkedin,
   SiNextcloud,
   SiNotion,
@@ -508,9 +510,9 @@ const oauthProviderIconMap = {
   slack: SiSlack,
   telegram: SiTelegram,
   wechat: SiWechat,
-  keycloak: SiOpenid,
+  keycloak: SiKeycloak,
   nextcloud: SiNextcloud,
-  authentik: SiOpenid,
+  authentik: SiAuthentik,
   openid: SiOpenid,
   okta: SiOkta,
   auth0: SiAuth0,
@@ -1066,8 +1068,14 @@ export function renderQuotaWithAmount(amount) {
   if (quotaDisplayType === 'TOKENS') {
     return renderNumber(renderUnitWithQuota(amount));
   }
+
+  const numericAmount = Number(amount);
+  const formattedAmount = Number.isFinite(numericAmount)
+    ? numericAmount.toFixed(2)
+    : amount;
+
   if (quotaDisplayType === 'CNY') {
-    return '¥' + amount;
+    return '¥' + formattedAmount;
   } else if (quotaDisplayType === 'CUSTOM') {
     const statusStr = localStorage.getItem('status');
     let symbol = '¤';
@@ -1077,9 +1085,9 @@ export function renderQuotaWithAmount(amount) {
         symbol = s?.custom_currency_symbol || symbol;
       }
     } catch (e) {}
-    return symbol + amount;
+    return symbol + formattedAmount;
   }
-  return '$' + amount;
+  return '$' + formattedAmount;
 }
 
 /**
